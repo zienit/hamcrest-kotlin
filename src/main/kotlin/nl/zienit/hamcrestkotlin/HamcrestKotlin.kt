@@ -8,9 +8,9 @@ import kotlin.reflect.KClass
 
 class MyMatchers {
 
-    val assertions: MutableList<Pair<Any?, Matcher<Any>>> = mutableListOf()
+    val assertions: MutableList<Pair<Any?, Matcher<out Any>>> = mutableListOf()
 
-    private fun Any?.eval(body: MyMatchers.(Any?) -> Unit, creator: (MyMatchers) -> Matcher<Any>) {
+    private fun Any?.eval(body: MyMatchers.(Any?) -> Unit, creator: (MyMatchers) -> Matcher<out Any>) {
         val m = MyMatchers()
         m.body(this)
         if (m.assertions.any { (a, _) -> a !== this }) {
@@ -19,7 +19,7 @@ class MyMatchers {
         assertions.add(this to creator(m))
     }
 
-    private fun Any?.eval(creator: () -> Matcher<Any>) {
+    private fun Any?.eval(creator: () -> Matcher<out Any>) {
         assertions.add(this to creator())
     }
 
@@ -28,23 +28,23 @@ class MyMatchers {
     }
 
     infix fun Any?.hasItem(value: Any) {
-        eval { Matchers.hasItem(value) as Matcher<Any> }
+        eval { Matchers.hasItem(value) }
     }
 
     infix fun Any?.hasItems(values: Array<out Any>) {
-        eval { Matchers.hasItems(*values) as Matcher<Any> }
+        eval { Matchers.hasItems(*values) }
     }
 
     infix fun Any?.hasEntry(entry: Pair<Any, Any>) {
-        eval { Matchers.hasEntry(entry.first, entry.second) as Matcher<Any> }
+        eval { Matchers.hasEntry(entry.first, entry.second) }
     }
 
     infix fun Any?.containsString(value: Any) {
-        eval { Matchers.containsString(value as String) as Matcher<Any> }
+        eval { Matchers.containsString(value as String) }
     }
 
     infix fun Any?.instanceOf(value: KClass<out Any>) {
-        eval { Matchers.instanceOf<Class<Any>>(value.java) as Matcher<Any> }
+        eval { Matchers.instanceOf<Class<Any>>(value.java) }
     }
 
     infix fun Any?.not(body: MyMatchers.(Any?) -> Unit) {
@@ -52,7 +52,7 @@ class MyMatchers {
     }
 
     infix fun Any?.hasItem(body: MyMatchers.(Any?) -> Unit) {
-        eval(body) { Matchers.hasItem(it.assertions.map { (_, m) -> m }.first()) as Matcher<Any> }
+        eval(body) { Matchers.hasItem(it.assertions.map { (_, m) -> m }.first()) }
     }
 
     infix fun Any?.allOf(body: MyMatchers.(Any?) -> Unit) {
@@ -75,5 +75,5 @@ class MyMatchers {
 fun assertThat(body: MyMatchers.() -> Unit) {
     val m = MyMatchers();
     m.body()
-    m.assertions.forEach { (actual, matcher) -> MatcherAssert.assertThat<Any>(actual, matcher) }
+    m.assertions.forEach { (actual, matcher) -> MatcherAssert.assertThat(actual, matcher as Matcher<in Any?>) }
 }
