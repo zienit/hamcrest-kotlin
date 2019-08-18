@@ -5,7 +5,7 @@ This DSL allows you to build simple or complex assertions with the familiar Hamc
 Its use is best explained with a few examples.
 
 #### Example 1
-A simple assertion on the contents of a string. Note that 'it' here is not Kotlin's it but some syntactic sugar to allow a nice infix expression without parantheses.
+A simple assertion on the contents of a string. Note that 'it' here is not Kotlin's it but some syntactic sugar to allow a nice infix expression without parentheses.
 
 ```
 val f = "foobar"
@@ -28,7 +28,7 @@ examine (f) assertThat {
 ```
 
 ### Example 3
-A variation of example 2. Here at least on of the clauses must be true.
+A variation of example 2. Here at least one of the clauses must be true.
 
 ```
 val f = "foobar"
