@@ -5,7 +5,8 @@ examples
 
 ```
 val y = "hello"
-assertThat {
-    y equalTo "hello"
+
+on (y) assertThat {
+    it equalTo "hello"
 }
 ```
