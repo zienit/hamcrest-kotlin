@@ -9,7 +9,7 @@ class HamcrestKotlinTests {
     fun testEqualTo() {
         val y = "hello"
 
-        on(y) assertThat {
+        examine(y) assertThat {
             it equalTo "hello"
         }
     }
@@ -18,7 +18,7 @@ class HamcrestKotlinTests {
     fun testEqualToFailure() {
         val y = "hello"
 
-        on(y) assertThat {
+        examine(y) assertThat {
             it equalTo "hi"
         }
     }
@@ -26,7 +26,7 @@ class HamcrestKotlinTests {
     @Test
     fun testhasItem() {
         val x = listOf(1, 2, 3, 4)
-        on(x) assertThat {
+        examine(x) assertThat {
             it hasItem 4
         }
     }
@@ -35,8 +35,8 @@ class HamcrestKotlinTests {
     fun testhasItemThat() {
         val x = listOf(1, 2, 3, 4)
 
-        on(x) assertThat {
-            it hasItem { it equalTo 3 }
+        examine(x) assertThat {
+            hasItem { it equalTo 3 }
         }
     }
 
@@ -44,7 +44,7 @@ class HamcrestKotlinTests {
     fun testhasItemFailure() {
         val x = listOf(1, 2, 3, 4)
 
-        on(x) assertThat {
+        examine(x) assertThat {
             it hasItem 5
         }
     }
@@ -53,8 +53,8 @@ class HamcrestKotlinTests {
     fun testhasItemMatcher() {
         val x = listOf("foo", "bar")
 
-        on(x) assertThat {
-            it hasItem { it containsString "oo" }
+        examine(x) assertThat {
+            hasItem { it containsString "oo" }
         }
     }
 
@@ -62,8 +62,8 @@ class HamcrestKotlinTests {
     fun testhasItemMatcherFailure() {
         val x = listOf("foo", "bar")
 
-        on(x) assertThat {
-            it hasItem { it containsString "xx" }
+        examine(x) assertThat {
+            hasItem { it containsString "xx" }
         }
     }
 
@@ -71,7 +71,7 @@ class HamcrestKotlinTests {
     fun testContainsString() {
         val y = "hello"
 
-        on(y) assertThat {
+        examine(y) assertThat {
             it containsString "ll"
         }
     }
@@ -80,7 +80,7 @@ class HamcrestKotlinTests {
     fun testContainsStringFailure() {
         val y = "hello"
 
-        on(y) assertThat {
+        examine(y) assertThat {
             it containsString "xx"
         }
     }
@@ -89,15 +89,15 @@ class HamcrestKotlinTests {
     fun testHasEntry() {
         val y = mapOf(1 to "one", 2 to "two", 3 to "three")
 
-        on(y) assertThat {
+        examine(y) assertThat {
             it hasEntry (2 to "two")
         }
 
-        on(y) assertThat {
+        examine(y) assertThat {
             it hasKey 2
         }
 
-        on(y) assertThat {
+        examine(y) assertThat {
             it hasValue "two"
         }
     }
@@ -106,7 +106,7 @@ class HamcrestKotlinTests {
     fun testHasEntryMatcher() {
         val y = mapOf(1 to "one", 2 to "two", 3 to "three")
 
-        on(y) assertThat {
+        examine(y) assertThat {
             it.hasEntry({
                 it equalTo 2
             }, {
@@ -114,12 +114,12 @@ class HamcrestKotlinTests {
             })
         }
 
-        on(y) assertThat {
-            it hasKey { it equalTo 2 }
+        examine(y) assertThat {
+            hasKey { it equalTo 2 }
         }
 
-        on(y) assertThat {
-            it hasValue { it containsString "two" }
+        examine(y) assertThat {
+            hasValue { it containsString "two" }
         }
     }
 
@@ -127,10 +127,10 @@ class HamcrestKotlinTests {
     fun testHasEntryAll() {
         val y = mapOf(1 to "one", 2 to "two", 3 to "three")
 
-        on(y) assertThat {
+        examine(y) assertThat {
             allOf {
-                it hasKey { it equalTo 2 }
-                it hasValue { it containsString "two" }
+                hasKey { it equalTo 2 }
+                hasValue { it containsString "two" }
             }
         }
     }
@@ -139,7 +139,7 @@ class HamcrestKotlinTests {
     fun testHasEntryFailure() {
         val y = mapOf(1 to "one", 2 to "two", 3 to "three")
 
-        on(y) assertThat {
+        examine(y) assertThat {
             it hasEntry (4 to "four")
         }
     }
@@ -148,7 +148,7 @@ class HamcrestKotlinTests {
     fun testInstanceOf() {
         val x = 5
 
-        on(x) assertThat {
+        examine(x) assertThat {
             it instanceOf Int::class
         }
     }
@@ -157,7 +157,7 @@ class HamcrestKotlinTests {
     fun testInstanceOfFailure() {
         val x = 5
 
-        on(x) assertThat {
+        examine(x) assertThat {
             it instanceOf String::class
         }
     }
@@ -166,7 +166,7 @@ class HamcrestKotlinTests {
     fun testAllOf() {
         val t = listOf("foo", "bar")
 
-        on(t) assertThat {
+        examine(t) assertThat {
             allOf {
                 it hasItem "foo"
                 it hasItem "bar"
@@ -178,35 +178,35 @@ class HamcrestKotlinTests {
     fun testNullActual() {
         val l: Int? = null
 
-        on(l) assertThat { it equalTo 3 }
+        examine(l) assertThat { it equalTo 3 }
     }
 
     @Test(expected = AssertionError::class)
     fun testNullExpected() {
         val l = 3
 
-        on(l) assertThat { it equalTo null }
+        examine(l) assertThat { it equalTo null }
     }
 
     @Test(expected = AssertionError::class)
     fun testNullIterable() {
         val l: List<Int?>? = null
 
-        on(l) assertThat { it hasItem 3 }
+        examine(l) assertThat { it hasItem 3 }
     }
 
     @Test(expected = AssertionError::class)
     fun testNullMap() {
         val l: Map<Int, String?>? = null
 
-        on(l) assertThat { it hasEntry (3 to "foo") }
+        examine(l) assertThat { it hasEntry (3 to "foo") }
     }
 
     @Test
     fun testBoth() {
         val s = "foo"
 
-        on(s) assertThat {
+        examine(s) assertThat {
             both {
                 it containsString "oo"
                 it containsString "fo"
@@ -218,7 +218,7 @@ class HamcrestKotlinTests {
     fun testEither() {
         val s = "foo"
 
-        on(s) assertThat {
+        examine(s) assertThat {
             either {
                 it containsString "oo"
                 it containsString "xx"
@@ -230,8 +230,8 @@ class HamcrestKotlinTests {
     fun testEveryItem() {
         val l = listOf("foo", "far")
 
-        on(l) assertThat {
-            it everyItem {
+        examine(l) assertThat {
+            everyItem {
                 it containsString "f"
             }
         }
@@ -241,7 +241,7 @@ class HamcrestKotlinTests {
     fun testAnything() {
         val l = listOf("foo", "far")
 
-        on(l) assertThat {
+        examine(l) assertThat {
             anything()
         }
     }
@@ -250,7 +250,7 @@ class HamcrestKotlinTests {
     fun testAnythingFailure() {
         val l = listOf("foo", "far")
 
-        on(l) assertThat {
+        examine(l) assertThat {
             not {
                 anything()
             }
@@ -261,7 +261,7 @@ class HamcrestKotlinTests {
     fun testHasItemNull() {
         val l = listOf(1, null, 3)
 
-        on(l) assertThat {
+        examine(l) assertThat {
             it hasItem null
         }
     }
@@ -269,22 +269,22 @@ class HamcrestKotlinTests {
     @Test
     fun testArrayContainging() {
         val a: Array<String?>? = arrayOf("foo", "bar")
-        on(a) assertThat {
-            it arrayContaining {
+        examine(a) assertThat {
+            arrayContaining {
                 it equalTo "foo"
                 it equalTo "bar"
             }
             it arrayContaining arrayOf("foo", "bar")
             it arrayWithSize 2
-            it arrayWithSize { it equalTo 2 }
+            arrayWithSize { it equalTo 2 }
         }
     }
 
     @Test
     fun testArrayContaingingInAnyOrder() {
         val a: Array<String?>? = arrayOf("foo", "bar")
-        on(a) assertThat {
-            it arrayContainingInAnyOrder {
+        examine(a) assertThat {
+            arrayContainingInAnyOrder {
                 it equalTo "bar"
                 it equalTo "foo"
             }
@@ -296,7 +296,7 @@ class HamcrestKotlinTests {
     fun testBlankString() {
         val s = " "
 
-        on(s) assertThat {
+        examine(s) assertThat {
             blankOrNullString()
             blankString()
         }
@@ -308,7 +308,7 @@ class HamcrestKotlinTests {
         val expected: BigDecimal = BigDecimal("12.5")
         val error: BigDecimal = BigDecimal("0.25")
 
-        on(actual) assertThat {
+        examine(actual) assertThat {
             closeTo(expected, error)
         }
     }
@@ -320,7 +320,7 @@ class HamcrestKotlinTests {
 
         val foo = Foo("foobar")
 
-        on(foo) assertThat {
+        examine(foo) assertThat {
             it hasProperty "bar"
             hasProperty("bar") { it containsString "oba" }
         }
@@ -331,7 +331,7 @@ class HamcrestKotlinTests {
 
         val i = 5
 
-        on(i) assertThat {
+        examine(i) assertThat {
             it greaterThan 3
             it lessThan 8
         }
@@ -340,11 +340,22 @@ class HamcrestKotlinTests {
     @Test
     fun testComparableList() {
 
-        val l = listOf(3,4,5)
+        val l = listOf(3, 4, 5)
 
-        on(l) assertThat {
-            it everyItem {
+        examine(l) assertThat {
+            everyItem {
                 it greaterThanOrEqualTo 3
+            }
+        }
+    }
+
+    @Test
+    fun testMe() {
+        val f = "foobar"
+        examine(f) assertThat {
+            anyOf {
+                it containsString "foo"
+                it containsString "baz"
             }
         }
     }

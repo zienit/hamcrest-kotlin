@@ -21,6 +21,10 @@ abstract class CommonMatchers<M : CommonMatchers<M>> {
         eval(body, { Matchers.allOf(it.assertions) })
     }
 
+    fun anyOf(body: M.() -> Unit) {
+        eval(body, { Matchers.anyOf(it.assertions) })
+    }
+
     fun both(body: M.() -> Unit) {
         eval(body, { Matchers.both(it.assertions.get(0)).and(it.assertions.get(1)) })
     }
@@ -114,7 +118,7 @@ interface IterableMatchersBase<T> {
         assertions.add(Matchers.hasItem(expected) as Matcher<Any>)
     }
 
-    infix fun it.hasItem(body: RegularMatchers<T>.() -> Unit) {
+    fun hasItem(body: RegularMatchers<T>.() -> Unit) {
         val m = RegularMatchers<T>()
         m.body()
         assertions.add(Matchers.hasItem(m.assertions.first()) as Matcher<Any>)
@@ -124,7 +128,7 @@ interface IterableMatchersBase<T> {
         assertions.add(Matchers.hasItems(*expected) as Matcher<Any>)
     }
 
-    infix fun it.everyItem(body: RegularMatchers<T>.() -> Unit) {
+    infix fun everyItem(body: RegularMatchers<T>.() -> Unit) {
         val m = RegularMatchers<T>()
         m.body()
         assertions.add(Matchers.everyItem(m.assertions.first()) as Matcher<Any>)
@@ -163,7 +167,7 @@ interface MapMatchersBase<K, V> {
         assertions.add(Matchers.hasKey(expected) as Matcher<Any>)
     }
 
-    infix fun it.hasKey(body: RegularMatchers<K>.() -> Unit) {
+    fun hasKey(body: RegularMatchers<K>.() -> Unit) {
         val m = RegularMatchers<K>()
         m.body()
         assertions.add(Matchers.hasKey(m.assertions.first()) as Matcher<Any>)
@@ -173,7 +177,7 @@ interface MapMatchersBase<K, V> {
         assertions.add(Matchers.hasValue(expected) as Matcher<Any>)
     }
 
-    infix fun it.hasValue(body: RegularMatchers<V>.() -> Unit) {
+    fun hasValue(body: RegularMatchers<V>.() -> Unit) {
         val m = RegularMatchers<V>()
         m.body()
         assertions.add(Matchers.hasValue(m.assertions.first()) as Matcher<Any>)
@@ -204,7 +208,7 @@ interface ArrayMatchersBase<T> {
         assertions.add(Matchers.arrayContaining(*actuals) as Matcher<Any>)
     }
 
-    infix fun it.arrayContaining(body: RegularMatchers<T>.() -> Unit) {
+    fun arrayContaining(body: RegularMatchers<T>.() -> Unit) {
         val m = RegularMatchers<T>()
         m.body()
         assertions.add(Matchers.arrayContaining(*m.assertions.toTypedArray()) as Matcher<Any>)
@@ -214,7 +218,7 @@ interface ArrayMatchersBase<T> {
         assertions.add(Matchers.arrayContainingInAnyOrder(*actuals) as Matcher<Any>)
     }
 
-    infix fun it.arrayContainingInAnyOrder(body: RegularMatchers<T>.() -> Unit) {
+    fun arrayContainingInAnyOrder(body: RegularMatchers<T>.() -> Unit) {
         val m = RegularMatchers<T>()
         m.body()
         assertions.add(Matchers.arrayContainingInAnyOrder(*m.assertions.toTypedArray()) as Matcher<Any>)
@@ -224,7 +228,7 @@ interface ArrayMatchersBase<T> {
         assertions.add(Matchers.arrayWithSize<T>(actual) as Matcher<Any>)
     }
 
-    infix fun it.arrayWithSize(body: RegularMatchers<Int>.() -> Unit) {
+    fun arrayWithSize(body: RegularMatchers<Int>.() -> Unit) {
         val m = RegularMatchers<Int>()
         m.body()
         assertions.add(Matchers.arrayWithSize<T>(m.assertions.first()) as Matcher<Any>)
@@ -276,7 +280,7 @@ infix fun <T> ArrayAssert<T>.assertThat(body: ArrayMatchers<T>.() -> Unit) {
     m.assertions.forEach { matcher -> MatcherAssert.assertThat(actual, matcher as Matcher<in Array<T>?>) }
 }
 
-fun <T> on(actual: T): RegularAssert<T> = RegularAssert(actual)
-fun <T> on(actual: Iterable<T>?): IterableAssert<T> = IterableAssert(actual)
-fun <K, V> on(actual: Map<K, V>?): MapAssert<K, V> = MapAssert(actual)
-fun <T> on(actual: Array<T>?): ArrayAssert<T> = ArrayAssert(actual)
+fun <T> examine(actual: T): RegularAssert<T> = RegularAssert(actual)
+fun <T> examine(actual: Iterable<T>?): IterableAssert<T> = IterableAssert(actual)
+fun <K, V> examine(actual: Map<K, V>?): MapAssert<K, V> = MapAssert(actual)
+fun <T> examine(actual: Array<T>?): ArrayAssert<T> = ArrayAssert(actual)
