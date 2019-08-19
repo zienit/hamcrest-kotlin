@@ -17,6 +17,13 @@ abstract class CommonMatchers<M : CommonMatchers<M>> {
 
     abstract fun eval(body: M.() -> Unit, factory: (M) -> Matcher<Any>)
 
+    fun squash(): Matcher<Any> =
+            when (assertions.size) {
+                0 -> Matchers.anything()
+                1 -> assertions.first()
+                else -> Matchers.allOf(assertions)
+            }
+
     fun allOf(body: M.() -> Unit) {
         eval(body, { Matchers.allOf(it.assertions) })
     }
@@ -34,7 +41,7 @@ abstract class CommonMatchers<M : CommonMatchers<M>> {
     }
 
     fun not(body: M.() -> Unit) {
-        eval(body, { Matchers.not(it.assertions.first()) })
+        eval(body, { Matchers.not(it.squash()) })
     }
 
     fun anything() {
@@ -90,7 +97,7 @@ class RegularMatchers<T>() : CommonMatchers<RegularMatchers<T>>(), IterableMatch
     }
 
     fun hasProperty(name: String, body: RegularMatchers<T>.() -> Unit) {
-        eval(body, { Matchers.hasProperty(name, it.assertions.first()) })
+        eval(body, { Matchers.hasProperty(name, it.squash()) })
     }
 
     infix fun it.lessThan(expected: T) {
@@ -121,7 +128,7 @@ interface IterableMatchersBase<T> {
     fun hasItem(body: RegularMatchers<T>.() -> Unit) {
         val m = RegularMatchers<T>()
         m.body()
-        assertions.add(Matchers.hasItem(m.assertions.first()) as Matcher<Any>)
+        assertions.add(Matchers.hasItem(m.squash()) as Matcher<Any>)
     }
 
     infix fun it.hasItems(expected: Array<out T>) {
@@ -131,7 +138,7 @@ interface IterableMatchersBase<T> {
     infix fun everyItem(body: RegularMatchers<T>.() -> Unit) {
         val m = RegularMatchers<T>()
         m.body()
-        assertions.add(Matchers.everyItem(m.assertions.first()) as Matcher<Any>)
+        assertions.add(Matchers.everyItem(m.squash()) as Matcher<Any>)
     }
 }
 
@@ -160,7 +167,7 @@ interface MapMatchersBase<K, V> {
         key.keyBody()
         val value = RegularMatchers<V>()
         value.valueBody()
-        assertions.add(Matchers.hasEntry(key.assertions.first(), value.assertions.first()) as Matcher<Any>)
+        assertions.add(Matchers.hasEntry(key.squash(), value.squash()) as Matcher<Any>)
     }
 
     infix fun it.hasKey(expected: K) {
@@ -170,7 +177,7 @@ interface MapMatchersBase<K, V> {
     fun hasKey(body: RegularMatchers<K>.() -> Unit) {
         val m = RegularMatchers<K>()
         m.body()
-        assertions.add(Matchers.hasKey(m.assertions.first()) as Matcher<Any>)
+        assertions.add(Matchers.hasKey(m.squash()) as Matcher<Any>)
     }
 
     infix fun it.hasValue(expected: V) {
@@ -180,7 +187,7 @@ interface MapMatchersBase<K, V> {
     fun hasValue(body: RegularMatchers<V>.() -> Unit) {
         val m = RegularMatchers<V>()
         m.body()
-        assertions.add(Matchers.hasValue(m.assertions.first()) as Matcher<Any>)
+        assertions.add(Matchers.hasValue(m.squash()) as Matcher<Any>)
     }
 }
 
@@ -231,7 +238,7 @@ interface ArrayMatchersBase<T> {
     fun arrayWithSize(body: RegularMatchers<Int>.() -> Unit) {
         val m = RegularMatchers<Int>()
         m.body()
-        assertions.add(Matchers.arrayWithSize<T>(m.assertions.first()) as Matcher<Any>)
+        assertions.add(Matchers.arrayWithSize<T>(m.squash()) as Matcher<Any>)
     }
 }
 

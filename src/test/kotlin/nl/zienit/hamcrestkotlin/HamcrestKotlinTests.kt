@@ -351,11 +351,11 @@ class HamcrestKotlinTests {
 
     @Test
     fun testMe() {
-        val f = "foobar"
-        examine(f) assertThat {
-            anyOf {
-                it containsString "foo"
-                it containsString "baz"
+        val l = listOf(1,3,5,7)
+        examine(l) assertThat {
+            hasItem {
+                it greaterThan 4
+                it lessThan 6
             }
         }
     }

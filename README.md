@@ -51,3 +51,17 @@ examine(l) assertThat {
         it greaterThanOrEqualTo 3
     }
 ```
+
+### Example 5
+If a block contains more than one clause, those clauses are automatically wrapped inside an implicit allOf clause. 
+In this example the list must contain an item that is > 4 and < 6.
+```
+val l = listOf(1,3,5,7)
+
+examine(l) assertThat {
+    hasItem {
+        it greaterThan 4
+        it lessThan 6
+    }
+}
+```
