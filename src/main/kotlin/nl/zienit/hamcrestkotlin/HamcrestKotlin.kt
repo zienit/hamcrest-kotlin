@@ -4,6 +4,7 @@ import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 import java.math.BigDecimal
+import java.util.regex.Pattern
 import kotlin.reflect.KClass
 
 @DslMarker
@@ -64,16 +65,8 @@ class RegularMatchers<T>() : CommonMatchers<RegularMatchers<T>>(), IterableMatch
         assertions.add(matcher as Matcher<Any>)
     }
 
-    infix fun it.equalTo(expected: T?) {
-        add(Matchers.equalTo(expected))
-    }
-
-    infix fun it.containsString(expected: String) {
-        add(Matchers.containsString(expected) as Matcher<Any>)
-    }
-
-    infix fun it.instanceOf(value: KClass<out Any>) {
-        add(Matchers.instanceOf<Class<Any>>(value.java) as Matcher<Any>)
+    infix fun it.any(value: KClass<out Any>) {
+        add(Matchers.any(value.java) as Matcher<Any>)
     }
 
     fun blankOrNullString() {
@@ -92,12 +85,104 @@ class RegularMatchers<T>() : CommonMatchers<RegularMatchers<T>>(), IterableMatch
         add(Matchers.closeTo(expected, error) as Matcher<Any>)
     }
 
+    infix fun it.comparesEqualTo(expected: T?) {
+        add(Matchers.comparesEqualTo(expected as Comparable<Any>) as Matcher<Any>)
+    }
+
+    infix fun it.containsString(expected: String) {
+        add(Matchers.containsString(expected) as Matcher<Any>)
+    }
+
+    infix fun it.containsStringIgnoringCase(expected: String) {
+        add(Matchers.containsStringIgnoringCase(expected) as Matcher<Any>)
+    }
+
+    fun emptyOrNullString() {
+        add(Matchers.emptyOrNullString() as Matcher<Any>)
+    }
+
+    fun emptyString() {
+        add(Matchers.emptyString() as Matcher<Any>)
+    }
+
+    infix fun it.endsWith(expected: String) {
+        add(Matchers.endsWith(expected) as Matcher<Any>)
+    }
+
+    infix fun it.endsWithIgnoringCase(expected: String) {
+        add(Matchers.endsWithIgnoringCase(expected) as Matcher<Any>)
+    }
+
+    infix fun it.equalTo(expected: T?) {
+        add(Matchers.equalTo(expected))
+    }
+
+    infix fun it.equalToCompressingWhiteSpace(expected: String) {
+        add(Matchers.equalToCompressingWhiteSpace(expected) as Matcher<Any>)
+    }
+
+    infix fun it.equalToIgnoringCase(expected: String) {
+        add(Matchers.equalToIgnoringCase(expected) as Matcher<Any>)
+    }
+
+    infix fun it.equalToObject(expected: Any) {
+        add(Matchers.equalToObject(expected))
+    }
+
+    infix fun it.hasLength(expected: Int) {
+        add(Matchers.hasLength(expected) as Matcher<Any>)
+    }
+
+    infix fun it.hasToString(expected: String) {
+        add(Matchers.hasToString<T>(expected) as Matcher<Any>)
+    }
+
+    fun hasToString(body: RegularMatchers<T>.() -> Unit) {
+        eval(body, { Matchers.hasToString(it.squash()) })
+    }
+
+    fun `in`(vararg actual : T) {
+        add(Matchers.`in`(actual) as Matcher<Any>)
+    }
+
+    fun `in`(actual : Collection<T>) {
+        add(Matchers.`in`(actual) as Matcher<Any>)
+    }
+
+    infix fun it.instanceOf(value: KClass<out Any>) {
+        add(Matchers.instanceOf<Class<Any>>(value.java) as Matcher<Any>)
+    }
+
+    infix fun it.isA(value: KClass<out Any>) {
+        add(Matchers.isA<Class<Any>>(value.java) as Matcher<Any>)
+    }
+
+    infix fun it.matchesPattern(pattern: Pattern) {
+        add(Matchers.matchesPattern(pattern) as Matcher<Any>)
+    }
+
+    infix fun it.matchesPattern(regex: String) {
+        add(Matchers.matchesPattern(regex) as Matcher<Any>)
+    }
+
+    infix fun it.matchesRegex(pattern: Pattern) {
+        add(Matchers.matchesRegex(pattern) as Matcher<Any>)
+    }
+
+    infix fun it.matchesRegex(regex: String) {
+        add(Matchers.matchesRegex(regex) as Matcher<Any>)
+    }
+
+    infix fun it.not(actual: T) {
+        add(Matchers.not(actual))
+    }
+
     infix fun it.hasProperty(name: String) {
         add(Matchers.hasProperty<T>(name) as Matcher<Any>)
     }
 
-    fun hasProperty(name: String, body: RegularMatchers<T>.() -> Unit) {
-        eval(body, { Matchers.hasProperty(name, it.squash()) })
+    fun hasProperty(name: String, body: RegularMatchers<Any>.() -> Unit) {
+        eval(body as RegularMatchers<T>.() -> Unit, { Matchers.hasProperty(name, it.squash()) })
     }
 
     infix fun it.lessThan(expected: T) {
@@ -115,11 +200,75 @@ class RegularMatchers<T>() : CommonMatchers<RegularMatchers<T>>(), IterableMatch
     infix fun it.greaterThanOrEqualTo(expected: T) {
         add(Matchers.greaterThanOrEqualTo(expected as Comparable<Any>) as Matcher<Any>)
     }
+
+    infix fun it.sameInstance(expected: T) {
+        add(Matchers.sameInstance(expected));
+    }
+
+    infix fun it.startsWith(expected: String) {
+        add(Matchers.startsWith(expected) as Matcher<Any>)
+    }
+
+    infix fun it.startsWithIgnoringCase(expected: String) {
+        add(Matchers.startsWithIgnoringCase(expected) as Matcher<Any>)
+    }
+
+    fun stringContainsInOrder(vararg substrings: String) {
+        add(Matchers.stringContainsInOrder(*substrings) as Matcher<Any>)
+    }
+
+    infix fun it.stringContainsInOrder(substrings: Iterable<String>) {
+        add(Matchers.stringContainsInOrder(substrings) as Matcher<Any>)
+    }
+
+    infix fun it.theInstance(expected: T) {
+        add(Matchers.theInstance(expected));
+    }
 }
 
 interface IterableMatchersBase<T> {
 
     val assertions: MutableList<Matcher<Any>>
+
+    fun contains(vararg expected: T) {
+        assertions.add(Matchers.contains(*expected) as Matcher<Any>)
+    }
+
+    fun contains(body: RegularMatchers<T>.() -> Unit) {
+        val m = RegularMatchers<T>()
+        m.body()
+        assertions.add(Matchers.contains(m.assertions) as Matcher<Any>)
+    }
+
+    fun containsInAnyOrder(vararg expected: T) {
+        assertions.add(Matchers.containsInAnyOrder(*expected) as Matcher<Any>)
+    }
+
+    fun containsInAnyOrder(body: RegularMatchers<T>.() -> Unit) {
+        val m = RegularMatchers<T>()
+        m.body()
+        assertions.add(Matchers.containsInAnyOrder(m.assertions) as Matcher<Any>)
+    }
+
+    fun containsInRelativeOrder(vararg expected: T) {
+        assertions.add(Matchers.containsInRelativeOrder(*expected) as Matcher<Any>)
+    }
+
+    fun containsInRelativeOrder(body: RegularMatchers<T>.() -> Unit) {
+        val m = RegularMatchers<T>()
+        m.body()
+        assertions.add(Matchers.containsInRelativeOrder(m.assertions) as Matcher<Any>)
+    }
+
+    fun empty() {
+        assertions.add(Matchers.empty<T>() as Matcher<Any>)
+    }
+
+    infix fun everyItem(body: RegularMatchers<T>.() -> Unit) {
+        val m = RegularMatchers<T>()
+        m.body()
+        assertions.add(Matchers.everyItem(m.squash()) as Matcher<Any>)
+    }
 
     infix fun it.hasItem(expected: T?) {
         assertions.add(Matchers.hasItem(expected) as Matcher<Any>)
@@ -131,14 +280,18 @@ interface IterableMatchersBase<T> {
         assertions.add(Matchers.hasItem(m.squash()) as Matcher<Any>)
     }
 
-    infix fun it.hasItems(expected: Array<out T>) {
+    fun hasItems(vararg expected: T) {
         assertions.add(Matchers.hasItems(*expected) as Matcher<Any>)
     }
 
-    infix fun everyItem(body: RegularMatchers<T>.() -> Unit) {
-        val m = RegularMatchers<T>()
+    infix fun it.hasSize(expected: Int) {
+        assertions.add(Matchers.hasSize<T>(expected) as Matcher<Any>)
+    }
+
+    fun hasSize(body: RegularMatchers<Int>.() -> Unit) {
+        val m = RegularMatchers<Int>()
         m.body()
-        assertions.add(Matchers.everyItem(m.squash()) as Matcher<Any>)
+        assertions.add(Matchers.hasSize<T>(m.squash()) as Matcher<Any>)
     }
 }
 
@@ -189,6 +342,20 @@ interface MapMatchersBase<K, V> {
         m.body()
         assertions.add(Matchers.hasValue(m.squash()) as Matcher<Any>)
     }
+
+    infix fun it.aMapWithSize(expected: Int) {
+        assertions.add(Matchers.aMapWithSize<K, V>(expected) as Matcher<Any>)
+    }
+
+    fun aMapWithSize(body: RegularMatchers<Int>.() -> Unit) {
+        val m = RegularMatchers<Int>()
+        m.body()
+        assertions.add(Matchers.aMapWithSize<K, V>(m.squash()) as Matcher<Any>)
+    }
+
+    fun anEmptyMap() {
+        assertions.add(Matchers.anEmptyMap<K, V>() as Matcher<Any>)
+    }
 }
 
 @HamcrestKotlinMarker
@@ -211,7 +378,7 @@ interface ArrayMatchersBase<T> {
 
     val assertions: MutableList<Matcher<Any>>
 
-    infix fun it.arrayContaining(actuals: Array<out T>) {
+    fun arrayContaining(vararg actuals: T) {
         assertions.add(Matchers.arrayContaining(*actuals) as Matcher<Any>)
     }
 
@@ -221,7 +388,7 @@ interface ArrayMatchersBase<T> {
         assertions.add(Matchers.arrayContaining(*m.assertions.toTypedArray()) as Matcher<Any>)
     }
 
-    infix fun it.arrayContainingInAnyOrder(actuals: Array<out T>) {
+    fun arrayContainingInAnyOrder(vararg actuals: T) {
         assertions.add(Matchers.arrayContainingInAnyOrder(*actuals) as Matcher<Any>)
     }
 
@@ -240,6 +407,21 @@ interface ArrayMatchersBase<T> {
         m.body()
         assertions.add(Matchers.arrayWithSize<T>(m.squash()) as Matcher<Any>)
     }
+
+    fun emptyArray() {
+        assertions.add(Matchers.emptyArray<T>() as Matcher<Any>)
+    }
+
+    infix fun it.hasItemInArray(expected: T?) {
+        assertions.add(Matchers.hasItemInArray(expected) as Matcher<Any>)
+    }
+
+    fun hasItemInArray(body: RegularMatchers<T>.() -> Unit) {
+        val m = RegularMatchers<T>()
+        m.body()
+        assertions.add(Matchers.hasItemInArray(m.squash()) as Matcher<Any>)
+    }
+
 }
 
 @HamcrestKotlinMarker
