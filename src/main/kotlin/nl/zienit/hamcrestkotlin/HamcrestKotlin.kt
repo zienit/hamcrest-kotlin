@@ -48,6 +48,10 @@ abstract class CommonMatchers<M : CommonMatchers<M>> {
     fun anything() {
         eval({}, { Matchers.anything() as Matcher<Any> })
     }
+
+    infix fun String.describedAs(body: M.() -> Unit) {
+        eval(body, { Matchers.describedAs(this, it.assertions.first()) })
+    }
 }
 
 @HamcrestKotlinMarker
@@ -62,7 +66,7 @@ class RegularMatchers<T>() : CommonMatchers<RegularMatchers<T>>(), IterableMatch
     }
 
     private fun add(matcher: Matcher<Any>) {
-        assertions.add(matcher as Matcher<Any>)
+        assertions.add(matcher)
     }
 
     infix fun it.any(value: KClass<out Any>) {
@@ -141,11 +145,11 @@ class RegularMatchers<T>() : CommonMatchers<RegularMatchers<T>>(), IterableMatch
         eval(body, { Matchers.hasToString(it.squash()) })
     }
 
-    fun `in`(vararg actual : T) {
+    fun `in`(vararg actual: T) {
         add(Matchers.`in`(actual) as Matcher<Any>)
     }
 
-    fun `in`(actual : Collection<T>) {
+    fun `in`(actual: Collection<T>) {
         add(Matchers.`in`(actual) as Matcher<Any>)
     }
 
@@ -315,7 +319,7 @@ interface MapMatchersBase<K, V> {
         assertions.add(Matchers.hasEntry(expected.first, expected.second) as Matcher<Any>)
     }
 
-    fun it.hasEntry(keyBody: RegularMatchers<K>.() -> Unit, valueBody: RegularMatchers<V>.() -> Unit) {
+    fun hasEntry(keyBody: RegularMatchers<K>.() -> Unit, valueBody: RegularMatchers<V>.() -> Unit) {
         val key = RegularMatchers<K>()
         key.keyBody()
         val value = RegularMatchers<V>()

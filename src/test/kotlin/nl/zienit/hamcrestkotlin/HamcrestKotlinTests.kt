@@ -17,10 +17,10 @@ class HamcrestKotlinTests {
             it endsWith "lo"
             it endsWithIgnoringCase "LO"
             it startsWith "he"
-            it startsWithIgnoringCase  "HE"
+            it startsWithIgnoringCase "HE"
             it not "foo"
-            stringContainsInOrder("he","lo")
-            it stringContainsInOrder listOf("h","llo")
+            stringContainsInOrder("he", "lo")
+            it stringContainsInOrder listOf("h", "llo")
         }
     }
 
@@ -148,7 +148,7 @@ class HamcrestKotlinTests {
         val y = mapOf(1 to "one", 2 to "two", 3 to "three")
 
         examine(y) assertThat {
-            it.hasEntry({
+            hasEntry({
                 it equalTo 2
             }, {
                 it equalTo "two"
@@ -506,13 +506,22 @@ class HamcrestKotlinTests {
     }
 
     @Test
+    fun testDescribedAs() {
+
+        val life = 42
+        examine(life) assertThat {
+            "the meaning of life is 42" describedAs {
+                it equalTo 42
+            }
+        }
+    }
+
+    @Test
     fun testMe() {
         val l = listOf(1, 3, 5, 7)
-        examine(l) assertThat {
-            hasItem {
-                it greaterThan 4
-                it lessThan 6
-            }
+        val m = mapOf("foo" to l)
+        examine(m) assertThat {
+            hasEntry({ it equalTo "foo" }, { it hasSize 4 })
         }
     }
 }
